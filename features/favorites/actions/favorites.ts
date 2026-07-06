@@ -2,9 +2,10 @@
 
 import { db } from "@/db";
 import { favorites, items } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, count, desc } from "drizzle-orm";
 import { auth } from "@/shared/lib/auth";
 import { headers } from "next/headers";
+import { ITEMS_PER_PAGE } from "@/shared/config/constants";
 
 export async function getUserFavoriteIds(): Promise<string[]> {
   const session = await auth.api.getSession({
@@ -52,18 +53,33 @@ export async function toggleFavorite(itemId: string) {
 }
 
 /**
- * Отримує всі улюблені книги поточного користувача.
+ * Отримує всі улюблені книги поточного користувача з пагінацією.
  */
-export async function getFavorites() {
+export async function getFavorites(pageParam: number = 1) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
   if (!session?.user) {
-    return [];
+    return { data: [], meta: null };
   }
 
-  // Робимо JOIN між items та favorites
+  // Отримуємо загальну кількість
+  const [{ totalCount }] = await db
+    .select({ totalCount: count() })
+    .from(favorites)
+    .where(eq(favorites.userId, session.user.id));
+
+  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE) || 1;
+
+  let safePage = Math.max(1, Math.floor(pageParam));
+  if (safePage > totalPages) {
+    safePage = totalPages;
+  }
+
+  const offset = (safePage - 1) * ITEMS_PER_PAGE;
+
+  // Робимо JOIN між items та favorites з лімітом та зсувом
   const favoriteBooks = await db
     .select({
       id: items.id,
@@ -74,7 +90,17 @@ export async function getFavorites() {
     })
     .from(items)
     .innerJoin(favorites, eq(items.id, favorites.itemId))
-    .where(eq(favorites.userId, session.user.id));
+    .where(eq(favorites.userId, session.user.id))
+    .orderBy(desc(favorites.createdAt))
+    .limit(ITEMS_PER_PAGE)
+    .offset(offset);
 
-  return favoriteBooks;
+  return {
+    data: favoriteBooks,
+    meta: {
+      currentPage: safePage,
+      totalPages,
+      totalCount,
+    },
+  };
 }
