@@ -3,11 +3,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { getBooks } from "../actions/get-books";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { Pagination } from "@/shared/ui/Pagination";
 
 export function BooksList() {
-  const { data: books, isLoading, error } = useQuery({
-    queryKey: ["books"],
-    queryFn: () => getBooks(),
+  const searchParams = useSearchParams();
+  const pageParam = searchParams.get("page");
+  const page = pageParam ? parseInt(pageParam, 10) : 1;
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["books", page],
+    queryFn: () => getBooks(page),
   });
 
   if (isLoading) {
@@ -26,7 +32,10 @@ export function BooksList() {
     );
   }
 
-  if (!books?.length) {
+  const books = data?.data || [];
+  const meta = data?.meta;
+
+  if (!books.length) {
     return (
       <div className="rounded-lg border-2 border-dashed border-gray-300 p-12 text-center">
         <p className="text-gray-500">No books found.</p>
@@ -35,36 +44,44 @@ export function BooksList() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {books.map((book) => (
-        <div key={book.id} className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md hover:border-blue-200">
-          <div className="relative aspect-[3/4] w-full overflow-hidden bg-gray-100 sm:aspect-[2/3]">
-            {book.imageUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={book.imageUrl}
-                alt={book.title}
-                className="h-full w-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-400">
-                No cover
-              </div>
-            )}
+    <>
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {books.map((book) => (
+          <div key={book.id} className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md hover:border-blue-200">
+            <div className="relative aspect-[3/4] w-full overflow-hidden bg-gray-100 sm:aspect-[2/3]">
+              {book.imageUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={book.imageUrl}
+                  alt={book.title}
+                  className="h-full w-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-400">
+                  No cover
+                </div>
+              )}
+            </div>
+            <div className="flex flex-1 flex-col p-4">
+              <h3 className="text-lg font-bold text-gray-900 line-clamp-1">
+                <Link href={`/books/${book.id}`}>
+                  <span aria-hidden="true" className="absolute inset-0" />
+                  {book.title}
+                </Link>
+              </h3>
+              <p className="mt-1 text-sm text-gray-500 line-clamp-2">
+                {book.description}
+              </p>
+            </div>
           </div>
-          <div className="flex flex-1 flex-col p-4">
-            <h3 className="text-lg font-bold text-gray-900 line-clamp-1">
-              <Link href={`/books/${book.id}`}>
-                <span aria-hidden="true" className="absolute inset-0" />
-                {book.title}
-              </Link>
-            </h3>
-            <p className="mt-1 text-sm text-gray-500 line-clamp-2">
-              {book.description}
-            </p>
-          </div>
+        ))}
+      </div>
+      
+      {meta && (
+        <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-gray-200 bg-white/90 backdrop-blur-md p-4 flex justify-center shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+          <Pagination currentPage={meta.currentPage} totalPages={meta.totalPages} />
         </div>
-      ))}
-    </div>
+      )}
+    </>
   );
 }
