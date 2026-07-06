@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Providers } from "@/shared/lib/query-provider";
 import "./globals.css";
 
 import Header from "@/shared/ui/Header";
@@ -15,9 +16,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`h-full antialiased`}>
-      <body className="flex flex-col min-h-full">
-        <Header />
-        {children}
+      <body>
+        <Providers>
+          <Header />
+          {children}
+        </Providers>
       </body>
     </html>
   );
