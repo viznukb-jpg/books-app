@@ -6,7 +6,7 @@ interface ProfileWidgetProps {
 }
 
 export function ProfileWidget({ name, email }: ProfileWidgetProps) {
-  // Беремо перші 2 літери імені для аватарки
+  // Take the first 2 letters of the name for the avatar
   const initials = name.substring(0, 2).toUpperCase();
   
   return (

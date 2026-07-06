@@ -1,4 +1,4 @@
-import { BooksContainer } from "@/features/books/ui/BooksContainer";
+import { BooksContainer } from "@/features/books/components/BooksContainer";
 
 export default function BooksPage() {
   return <BooksContainer />;

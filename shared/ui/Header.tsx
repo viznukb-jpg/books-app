@@ -3,8 +3,9 @@ import { auth } from "@/shared/lib/auth";
 import { headers } from "next/headers";
 import { Logo } from "@/shared/ui/Logo";
 import { Button } from "@/shared/ui/Button";
-import { ProfileWidget } from "@/features/auth/ui/ProfileWidget";
-import { LogoutButton } from "@/features/auth/ui/LogoutButton";
+import { ProfileWidget } from "@/features/auth/components/ProfileWidget";
+import { LogoutButton } from "@/features/auth/components/LogoutButton";
+import { DeleteAccountButton } from "@/features/auth/components/DeleteAccountButton";
 
 export default async function Header() {
   const session = await auth.api.getSession({
@@ -40,6 +41,7 @@ export default async function Header() {
                 name={session.user.name}
                 email={session.user.email}
               />
+              <DeleteAccountButton />
               <LogoutButton />
             </>
           ) : (

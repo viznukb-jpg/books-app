@@ -7,7 +7,7 @@ export function BooksContainer() {
         <h1 className="text-3xl font-bold text-gray-900">Books Catalog</h1>
       </div>
       
-      {/* Тимчасовий плейсхолдер */}
+      {/* Temporary placeholder */}
       <div className="rounded-lg border-2 border-dashed border-gray-300 p-12 text-center">
         <p className="text-gray-500">Books list will be rendered here...</p>
       </div>

@@ -30,7 +30,7 @@ export function LogoutButton() {
       disabled={isLoading}
       className="ml-4 font-semibold text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300 shadow-sm"
     >
-      {isLoading ? "Виходимо..." : "Logout"}
+      {isLoading ? "Logging out..." : "Logout"}
     </Button>
   );
 }

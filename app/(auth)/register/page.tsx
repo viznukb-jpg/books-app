@@ -1,5 +1,5 @@
-import { AuthContainer } from "@/features/auth/ui/AuthContainer";
-import { RegisterForm } from "@/features/auth/ui/RegisterForm";
+import { AuthContainer } from "@/features/auth/components/AuthContainer";
+import { RegisterForm } from "@/features/auth/components/RegisterForm";
 
 export default function RegisterPage() {
   return (
