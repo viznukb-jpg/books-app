@@ -54,7 +54,7 @@ export function RegisterForm() {
         return;
       }
 
-      router.push("/");
+      router.push("/books");
     } catch (err) {
       setError("An unexpected error occurred");
     }

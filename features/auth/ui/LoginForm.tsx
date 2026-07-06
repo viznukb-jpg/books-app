@@ -44,7 +44,7 @@ export function LoginForm() {
         return;
       }
 
-      router.push("/");
+      router.push("/books");
       router.refresh();
     } catch (err) {
       setError("An unexpected error occurred");

@@ -20,10 +20,7 @@ export function AuthContainer({
     <div className="flex min-h-[80vh] items-center justify-center p-4">
       <div className="w-full max-w-md rounded-lg border border-gray-200 bg-white p-8 shadow-sm">
         <div className="mb-2 text-left">
-          <Link
-            href="/"
-            className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 hover:underline"
-          >
+          <Link href="/books" className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 hover:underline">
             <span className="mr-1">&larr;</span> Stay unauthorized
           </Link>
         </div>

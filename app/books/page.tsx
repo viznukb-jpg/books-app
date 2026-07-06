@@ -1,3 +1,5 @@
+import { BooksContainer } from "@/features/books/ui/BooksContainer";
+
 export default function BooksPage() {
-  return <div>Books page</div>;
+  return <BooksContainer />;
 }

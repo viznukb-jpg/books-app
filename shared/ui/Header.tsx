@@ -19,7 +19,7 @@ export default async function Header() {
 
           <nav className="flex items-center gap-6">
             <Link
-              href="/"
+              href="/books"
               className="font-semibold text-gray-700 hover:text-blue-600 text-base transition-colors"
             >
               Books
