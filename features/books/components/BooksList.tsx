@@ -5,6 +5,7 @@ import { getBooks } from "../actions/get-books";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Pagination } from "@/shared/ui/Pagination";
+import { BookItem } from "./BookItem";
 
 export function BooksList() {
   const searchParams = useSearchParams();
@@ -47,36 +48,7 @@ export function BooksList() {
     <>
       <div className="gap-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {books.map((book) => (
-          <div
-            key={book.id}
-            className="group relative flex flex-col bg-white shadow-sm hover:shadow-md border border-gray-200 hover:border-blue-200 rounded-xl overflow-hidden transition-all"
-          >
-            <div className="relative bg-gray-100 w-full aspect-[3/4] sm:aspect-[2/3] overflow-hidden">
-              {book.imageUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={book.imageUrl}
-                  alt={book.title}
-                  className="w-full h-full object-center object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-              ) : (
-                <div className="flex justify-center items-center bg-gray-200 w-full h-full text-gray-400">
-                  No cover
-                </div>
-              )}
-            </div>
-            <div className="flex flex-col flex-1 p-4">
-              <h3 className="font-bold text-gray-900 text-lg line-clamp-1">
-                <Link href={`/books/${book.id}?from=${page}`}>
-                  <span aria-hidden="true" className="absolute inset-0" />
-                  {book.title}
-                </Link>
-              </h3>
-              <p className="mt-1 text-gray-500 text-sm line-clamp-2">
-                {book.description}
-              </p>
-            </div>
-          </div>
+          <BookItem key={book.id} book={book} fromPage={page} />
         ))}
       </div>
 

@@ -5,6 +5,7 @@ import { getBookById } from "../actions/get-book-by-id";
 import Link from "next/link";
 import { Button } from "@/shared/ui/Button";
 import { useSearchParams } from "next/navigation";
+import { FavoriteButton } from "@/features/favorites/components/FavoriteButton";
 
 interface BookDetailsProps {
   id: string;
@@ -74,7 +75,7 @@ export function BookDetails({ id }: BookDetailsProps) {
         <div className="flex flex-col flex-1">
           <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">{book.title}</h1>
           <div className="mt-2 text-sm text-gray-500">
-            Added: {new Date(book.createdAt || Date.now()).toLocaleDateString()}
+            Added: {new Date(book.createdAt || Date.now()).toLocaleDateString("en-GB")}
           </div>
           
           <div className="mt-8 border-t border-gray-200 pt-8">
@@ -85,10 +86,10 @@ export function BookDetails({ id }: BookDetailsProps) {
           </div>
 
           <div className="mt-auto pt-8 flex items-center gap-4">
-            {/* Тимчасовий плейсхолдер для майбутньої кнопки Favorites */}
-            <div className="w-full sm:w-auto p-4 border border-dashed border-gray-300 rounded-lg text-center text-sm text-gray-500">
-              [Favorite Button will be here]
-            </div>
+            <FavoriteButton bookId={book.id} />
+            <span className="text-sm font-medium text-gray-500">
+              Add to your favorites
+            </span>
           </div>
         </div>
       </div>
