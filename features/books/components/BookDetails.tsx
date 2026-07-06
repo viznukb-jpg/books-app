@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getBookById } from "../actions/get-book-by-id";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/shared/ui/Button";
 import { useSearchParams } from "next/navigation";
 import { FavoriteButton } from "@/features/favorites/components/FavoriteButton";
@@ -59,13 +60,14 @@ export function BookDetails({ id }: BookDetailsProps) {
       <div className="flex flex-col gap-10 md:flex-row">
         {/* Ліва колонка: Обкладинка */}
         <div className="w-full md:w-1/3 shrink-0">
-          <div className="aspect-[2/3] w-full overflow-hidden rounded-xl bg-gray-100 shadow-md">
+          <div className="relative aspect-[2/3] w-full overflow-hidden rounded-xl bg-gray-100 shadow-md">
             {book.imageUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 src={book.imageUrl}
                 alt={book.title}
-                className="h-full w-full object-cover object-center"
+                fill
+                sizes="(max-width: 768px) 100vw, 33vw"
+                className="object-cover object-center"
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-400">

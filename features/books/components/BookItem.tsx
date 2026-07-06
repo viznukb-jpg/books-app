@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { FavoriteButton } from "@/features/favorites/components/FavoriteButton";
 
 // Це тимчасовий тип, поки ми не винесемо типи БД окремо (або можна просто передати потрібні поля)
@@ -18,11 +19,12 @@ export function BookItem({ book, fromPage, source = "books" }: BookItemProps) {
     <div className="group relative flex flex-col bg-white shadow-sm hover:shadow-md border border-gray-200 hover:border-blue-200 rounded-xl overflow-hidden transition-all">
       <div className="relative bg-gray-100 w-full aspect-[3/4] sm:aspect-[3/3] overflow-hidden">
         {book.imageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={book.imageUrl}
             alt={book.title}
-            className="w-full h-full object-center object-cover group-hover:scale-105 transition-transform duration-300"
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover object-center group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
           <div className="flex justify-center items-center bg-gray-200 w-full h-full text-gray-400">

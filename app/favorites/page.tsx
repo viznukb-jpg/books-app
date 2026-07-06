@@ -1,10 +1,14 @@
 import React from "react";
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
 import { Metadata } from "next";
+import { auth } from "@/shared/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Your Favorites",
 };
+
 import { getFavorites } from "@/features/favorites/actions/favorites";
 import { FavoritesList } from "@/features/favorites/components/FavoritesList";
 
@@ -13,6 +17,13 @@ export default async function FavoritesPage({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) {
+    redirect("/login");
+  }
   const resolvedParams = await searchParams;
   const pageParam = resolvedParams.page;
   const page = typeof pageParam === "string" ? parseInt(pageParam, 10) : 1;
