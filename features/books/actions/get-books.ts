@@ -12,6 +12,9 @@ export async function getBooks(pageParam: number = 1): Promise<PaginatedResponse
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE) || 1;
 
   let safePage = Math.max(1, Math.floor(pageParam));
+  if (Number.isNaN(safePage)) {
+    safePage = 1;
+  }
   if (safePage > totalPages) {
     safePage = totalPages;
   }

@@ -1,5 +1,8 @@
-import React from "react";
-import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
+import {
+  HydrationBoundary,
+  QueryClient,
+  dehydrate,
+} from "@tanstack/react-query";
 import { Metadata } from "next";
 import { auth } from "@/shared/lib/auth";
 import { headers } from "next/headers";
@@ -30,14 +33,13 @@ export default async function FavoritesPage({
 
   const queryClient = new QueryClient();
 
-  // Завантажуємо на сервері список обраних книг поточного юзера
   await queryClient.prefetchQuery({
     queryKey: ["favorite-books", page],
     queryFn: () => getFavorites(page),
   });
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 pb-24">
+    <div className="mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 max-w-7xl">
       <HydrationBoundary state={dehydrate(queryClient)}>
         <FavoritesList />
       </HydrationBoundary>
