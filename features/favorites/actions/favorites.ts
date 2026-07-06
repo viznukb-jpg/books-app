@@ -6,6 +6,7 @@ import { eq, and, count, desc } from "drizzle-orm";
 import { auth } from "@/shared/lib/auth";
 import { headers } from "next/headers";
 import { ITEMS_PER_PAGE } from "@/shared/config/constants";
+import { PaginatedResponse, Book } from "@/shared/types";
 
 export async function getUserFavoriteIds(): Promise<string[]> {
   const session = await auth.api.getSession({
@@ -55,13 +56,13 @@ export async function toggleFavorite(itemId: string) {
 /**
  * Отримує всі улюблені книги поточного користувача з пагінацією.
  */
-export async function getFavorites(pageParam: number = 1) {
+export async function getFavorites(pageParam: number = 1): Promise<PaginatedResponse<Book>> {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
   if (!session?.user) {
-    return { data: [], meta: null };
+    return { data: [], meta: { currentPage: 1, totalPages: 1, totalCount: 0 } };
   }
 
   // Отримуємо загальну кількість

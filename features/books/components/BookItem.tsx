@@ -2,14 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { FavoriteButton } from "@/features/favorites/components/FavoriteButton";
 
-// Це тимчасовий тип, поки ми не винесемо типи БД окремо (або можна просто передати потрібні поля)
+import { Book } from "@/shared/types";
+
 interface BookItemProps {
-  book: {
-    id: string;
-    title: string;
-    description: string | null;
-    imageUrl: string | null;
-  };
+  book: Book;
   fromPage: number;
   source?: "books" | "favorites";
 }

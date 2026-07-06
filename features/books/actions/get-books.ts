@@ -4,8 +4,9 @@ import { db } from "@/db";
 import { items } from "@/db/schema";
 import { desc, count } from "drizzle-orm";
 import { ITEMS_PER_PAGE } from "@/shared/config/constants";
+import { PaginatedResponse, Book } from "@/shared/types";
 
-export async function getBooks(pageParam: number = 1) {
+export async function getBooks(pageParam: number = 1): Promise<PaginatedResponse<Book>> {
   const [{ totalCount }] = await db.select({ totalCount: count() }).from(items);
 
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE) || 1;

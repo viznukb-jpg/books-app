@@ -3,8 +3,9 @@
 import { db } from "@/db";
 import { items } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { Book } from "@/shared/types";
 
-export async function getBookById(id: string) {
+export async function getBookById(id: string): Promise<Book> {
   if (!id || typeof id !== "string") {
     throw new Error("Invalid ID");
   }
