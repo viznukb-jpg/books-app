@@ -1,16 +1,28 @@
-import React from "react";
+import {
+  HydrationBoundary,
+  QueryClient,
+  dehydrate,
+} from "@tanstack/react-query";
+import { getBooks } from "../actions/get-books";
+import { BooksList } from "./BooksList";
 
-export function BooksContainer() {
+export async function BooksContainer() {
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: ["books"],
+    queryFn: () => getBooks(),
+  });
+
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-gray-900">Books Catalog</h1>
+    <div className="mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-7xl">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="font-bold text-gray-900 text-3xl">Books Catalog</h1>
       </div>
-      
-      {/* Temporary placeholder */}
-      <div className="rounded-lg border-2 border-dashed border-gray-300 p-12 text-center">
-        <p className="text-gray-500">Books list will be rendered here...</p>
-      </div>
+
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <BooksList />
+      </HydrationBoundary>
     </div>
   );
 }
