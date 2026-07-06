@@ -40,6 +40,9 @@ export default async function FavoritesPage({
 
   return (
     <div className="mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 max-w-7xl">
+      <h1 className="mb-8 font-bold text-gray-900 dark:text-white text-3xl text-center">
+        Your Favorites
+      </h1>
       <HydrationBoundary state={dehydrate(queryClient)}>
         <FavoritesList />
       </HydrationBoundary>

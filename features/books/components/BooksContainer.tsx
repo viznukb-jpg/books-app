@@ -20,6 +20,7 @@ export async function BooksContainer({ page }: BooksContainerProps) {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 pb-24">
+      <h1 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-8">Books Catalog</h1>
       <HydrationBoundary state={dehydrate(queryClient)}>
         <BooksList />
       </HydrationBoundary>
