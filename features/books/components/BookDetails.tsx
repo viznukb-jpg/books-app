@@ -14,7 +14,11 @@ interface BookDetailsProps {
 export function BookDetails({ id }: BookDetailsProps) {
   const searchParams = useSearchParams();
   const fromPage = searchParams.get("from");
-  const backUrl = fromPage ? `/books?page=${fromPage}` : `/books`;
+  const source = searchParams.get("source") || "books";
+  
+  const basePath = source === "favorites" ? "/favorites" : "/books";
+  const backUrl = fromPage ? `${basePath}?page=${fromPage}` : basePath;
+  const backText = source === "favorites" ? "Back to favorites" : "Back to catalog";
 
   const { data: book, isLoading, error } = useQuery({
     queryKey: ["book", id],
@@ -35,7 +39,7 @@ export function BookDetails({ id }: BookDetailsProps) {
         <h2 className="text-xl font-bold">Error loading book</h2>
         <p className="mt-2 text-sm">The book you are looking for might not exist.</p>
         <div className="mt-4">
-          <Button href={backUrl} variant="outline">Back to catalog</Button>
+          <Button href={backUrl} variant="outline">{backText}</Button>
         </div>
       </div>
     );
@@ -48,7 +52,7 @@ export function BookDetails({ id }: BookDetailsProps) {
           href={backUrl} 
           className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors"
         >
-          &larr; Back to catalog
+          &larr; {backText}
         </Link>
       </div>
 

@@ -55,6 +55,7 @@ export function RegisterForm() {
       }
 
       router.push("/books");
+      router.refresh();
     } catch (err) {
       setError("An unexpected error occurred");
     }

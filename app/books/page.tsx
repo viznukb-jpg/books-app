@@ -1,4 +1,9 @@
 import { BooksContainer } from "@/features/books/components/BooksContainer";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Books Catalog",
+};
 
 export default async function BooksPage({
   searchParams,

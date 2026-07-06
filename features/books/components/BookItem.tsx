@@ -10,12 +10,13 @@ interface BookItemProps {
     imageUrl: string | null;
   };
   fromPage: number;
+  source?: "books" | "favorites";
 }
 
-export function BookItem({ book, fromPage }: BookItemProps) {
+export function BookItem({ book, fromPage, source = "books" }: BookItemProps) {
   return (
     <div className="group relative flex flex-col bg-white shadow-sm hover:shadow-md border border-gray-200 hover:border-blue-200 rounded-xl overflow-hidden transition-all">
-      <div className="relative bg-gray-100 w-full aspect-[3/4] sm:aspect-[2/3] overflow-hidden">
+      <div className="relative bg-gray-100 w-full aspect-[3/4] sm:aspect-[3/3] overflow-hidden">
         {book.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -28,15 +29,15 @@ export function BookItem({ book, fromPage }: BookItemProps) {
             No cover
           </div>
         )}
-        
-        {/* Кнопка Обране (поверх обкладинки) */}
-        <div className="absolute right-3 top-3 z-10">
+
+        <div className="top-3 right-3 z-10 absolute">
           <FavoriteButton bookId={book.id} />
         </div>
       </div>
+
       <div className="flex flex-col flex-1 p-4">
         <h3 className="font-bold text-gray-900 text-lg line-clamp-1">
-          <Link href={`/books/${book.id}?from=${fromPage}`}>
+          <Link href={`/books/${book.id}?from=${fromPage}&source=${source}`}>
             <span aria-hidden="true" className="absolute inset-0" />
             {book.title}
           </Link>

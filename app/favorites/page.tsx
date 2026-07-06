@@ -1,5 +1,10 @@
 import React from "react";
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Your Favorites",
+};
 import { getFavorites } from "@/features/favorites/actions/favorites";
 import { FavoritesList } from "@/features/favorites/components/FavoritesList";
 

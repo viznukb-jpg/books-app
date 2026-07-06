@@ -2,7 +2,6 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { getBooks } from "../actions/get-books";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Pagination } from "@/shared/ui/Pagination";
 import { BookItem } from "./BookItem";
