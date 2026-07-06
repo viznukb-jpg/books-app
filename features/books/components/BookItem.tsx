@@ -24,7 +24,7 @@ export function BookItem({ book, fromPage, source = "books" }: BookItemProps) {
             alt={book.title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover object-center group-hover:scale-105 transition-transform duration-300"
+            className="object-center object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
           <div className="flex justify-center items-center bg-gray-200 w-full h-full text-gray-400">
