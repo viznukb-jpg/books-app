@@ -18,15 +18,15 @@ export function BooksList() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
+      <div className="flex justify-center items-center py-20">
+        <div className="border-4 border-blue-600 border-t-transparent rounded-full w-8 h-8 animate-spin"></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="rounded-lg bg-red-50 p-4 text-red-600">
+      <div className="bg-red-50 p-4 rounded-lg text-red-600">
         Failed to load books. Please try again later.
       </div>
     );
@@ -37,7 +37,7 @@ export function BooksList() {
 
   if (!books.length) {
     return (
-      <div className="rounded-lg border-2 border-dashed border-gray-300 p-12 text-center">
+      <div className="p-12 border-2 border-gray-300 border-dashed rounded-lg text-center">
         <p className="text-gray-500">No books found.</p>
       </div>
     );
@@ -45,41 +45,47 @@ export function BooksList() {
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="gap-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {books.map((book) => (
-          <div key={book.id} className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md hover:border-blue-200">
-            <div className="relative aspect-[3/4] w-full overflow-hidden bg-gray-100 sm:aspect-[2/3]">
+          <div
+            key={book.id}
+            className="group relative flex flex-col bg-white shadow-sm hover:shadow-md border border-gray-200 hover:border-blue-200 rounded-xl overflow-hidden transition-all"
+          >
+            <div className="relative bg-gray-100 w-full aspect-[3/4] sm:aspect-[2/3] overflow-hidden">
               {book.imageUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={book.imageUrl}
                   alt={book.title}
-                  className="h-full w-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
+                  className="w-full h-full object-center object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-400">
+                <div className="flex justify-center items-center bg-gray-200 w-full h-full text-gray-400">
                   No cover
                 </div>
               )}
             </div>
-            <div className="flex flex-1 flex-col p-4">
-              <h3 className="text-lg font-bold text-gray-900 line-clamp-1">
-                <Link href={`/books/${book.id}`}>
+            <div className="flex flex-col flex-1 p-4">
+              <h3 className="font-bold text-gray-900 text-lg line-clamp-1">
+                <Link href={`/books/${book.id}?from=${page}`}>
                   <span aria-hidden="true" className="absolute inset-0" />
                   {book.title}
                 </Link>
               </h3>
-              <p className="mt-1 text-sm text-gray-500 line-clamp-2">
+              <p className="mt-1 text-gray-500 text-sm line-clamp-2">
                 {book.description}
               </p>
             </div>
           </div>
         ))}
       </div>
-      
+
       {meta && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-gray-200 bg-white/90 backdrop-blur-md p-4 flex justify-center shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-          <Pagination currentPage={meta.currentPage} totalPages={meta.totalPages} />
+        <div className="right-0 bottom-0 left-0 z-40 fixed flex justify-center bg-white/90 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] backdrop-blur-md p-4 border-gray-200 border-t">
+          <Pagination
+            currentPage={meta.currentPage}
+            totalPages={meta.totalPages}
+          />
         </div>
       )}
     </>
