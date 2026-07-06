@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { favorites } from "@/db/schema";
+import { favorites, items } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { auth } from "@/shared/lib/auth";
 import { headers } from "next/headers";
@@ -49,4 +49,32 @@ export async function toggleFavorite(itemId: string) {
     });
     return { status: "added", itemId };
   }
+}
+
+/**
+ * Отримує всі улюблені книги поточного користувача.
+ */
+export async function getFavorites() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) {
+    return [];
+  }
+
+  // Робимо JOIN між items та favorites
+  const favoriteBooks = await db
+    .select({
+      id: items.id,
+      title: items.title,
+      description: items.description,
+      imageUrl: items.imageUrl,
+      createdAt: items.createdAt,
+    })
+    .from(items)
+    .innerJoin(favorites, eq(items.id, favorites.itemId))
+    .where(eq(favorites.userId, session.user.id));
+
+  return favoriteBooks;
 }

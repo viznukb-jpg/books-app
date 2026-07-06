@@ -53,6 +53,7 @@ export function FavoriteButton({ bookId }: FavoriteButtonProps) {
     onSettled: () => {
       // Для певності після всього робимо інвалідацію
       queryClient.invalidateQueries({ queryKey: ["favorites"] });
+      queryClient.invalidateQueries({ queryKey: ["favorite-books"] });
     },
   });
 
