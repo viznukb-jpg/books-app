@@ -10,7 +10,8 @@ import { FavoriteButton } from "@/features/favorites/components/FavoriteButton";
 interface BookDetailsProps {
   id: string;
 }
-const fetchBookById = async (id: string) => {
+import { Book } from "@/shared/types";
+const fetchBookById = async (id: string): Promise<Book> => {
   const res = await fetch(`/api/items/${id}`);
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({}));

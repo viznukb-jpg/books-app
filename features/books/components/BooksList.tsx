@@ -4,7 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { Pagination } from "@/shared/ui/Pagination";
 import { BookItem } from "./BookItem";
-const fetchBooks = async (page: number) => {
+import { PaginatedResponse, Book } from "@/shared/types";
+const fetchBooks = async (page: number): Promise<PaginatedResponse<Book>> => {
   const res = await fetch(`/api/items?page=${page}`);
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({}));

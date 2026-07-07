@@ -9,7 +9,7 @@ const statusMap: Record<string, number> = {
   INTERNAL: 500,
 };
 
-type RouteHandlerContext<T = unknown> = { params: Promise<T> | T };
+type RouteHandlerContext<T = unknown> = { params: Promise<T> };
 
 type RouteHandler<T = unknown> = (
   request: Request,
