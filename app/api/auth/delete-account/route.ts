@@ -17,14 +17,14 @@ export async function DELETE(request: NextRequest) {
 
     const userId = session.user.id;
 
-    // Delete the user. 
-    // Thanks to onDelete: "cascade" in the schema, Drizzle/PostgreSQL will automatically 
-    // delete all related records in sessions, accounts, and favorites tables.
     await db.delete(user).where(eq(user.id, userId));
 
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error deleting account:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
 }
