@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Providers } from "@/shared/lib/query-provider";
+import { Providers } from "@/shared/lib/query-providers";
 import "./globals.css";
 
 import Header from "@/shared/ui/Header";

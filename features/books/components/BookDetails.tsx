@@ -1,7 +1,6 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getBookById } from "../actions/get-book-by-id";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/shared/ui/Button";
@@ -11,6 +10,14 @@ import { FavoriteButton } from "@/features/favorites/components/FavoriteButton";
 interface BookDetailsProps {
   id: string;
 }
+const fetchBookById = async (id: string) => {
+  const res = await fetch(`/api/items/${id}`);
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.error || "Failed to fetch book");
+  }
+  return res.json();
+};
 
 export function BookDetails({ id }: BookDetailsProps) {
   const searchParams = useSearchParams();
@@ -23,7 +30,7 @@ export function BookDetails({ id }: BookDetailsProps) {
 
   const { data: book, isLoading, error } = useQuery({
     queryKey: ["book", id],
-    queryFn: () => getBookById(id),
+    queryFn: () => fetchBookById(id),
   });
 
   if (isLoading) {

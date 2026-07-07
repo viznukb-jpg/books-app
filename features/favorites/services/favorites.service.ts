@@ -1,40 +1,30 @@
-"use server";
-
 import { db } from "@/db";
 import { favorites, items } from "@/db/schema";
 import { eq, and, count, desc } from "drizzle-orm";
-import { auth } from "@/shared/lib/auth";
-import { headers } from "next/headers";
 import { ITEMS_PER_PAGE } from "@/shared/config/constants";
 import { PaginatedResponse, Book } from "@/shared/types";
+import { AppError } from "@/shared/lib/errors";
 
-export async function getUserFavoriteIds(): Promise<string[]> {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session?.user) {
-    return [];
+export async function getUserFavoriteIds(userId: string): Promise<string[]> {
+  if (!userId) {
+    throw new AppError('UNAUTHORIZED', 'User ID is required');
   }
 
   const userFavorites = await db
     .select({ itemId: favorites.itemId })
     .from(favorites)
-    .where(eq(favorites.userId, session.user.id));
+    .where(eq(favorites.userId, userId));
 
   return userFavorites.map((f) => f.itemId);
 }
 
-export async function toggleFavorite(itemId: string) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session?.user) {
-    throw new Error("Unauthorized");
+export async function toggleFavorite(userId: string, itemId: string) {
+  if (!userId) {
+    throw new AppError('UNAUTHORIZED', 'User ID is required');
   }
-
-  const userId = session.user.id;
+  if (!itemId) {
+    throw new AppError('VALIDATION_ERROR', 'Item ID is required');
+  }
 
   const [existing] = await db
     .select()
@@ -53,37 +43,28 @@ export async function toggleFavorite(itemId: string) {
   }
 }
 
-/**
- * Отримує всі улюблені книги поточного користувача з пагінацією.
- */
-export async function getFavorites(pageParam: number = 1): Promise<PaginatedResponse<Book>> {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session?.user) {
-    return { data: [], meta: { currentPage: 1, totalPages: 1, totalCount: 0 } };
+export async function getFavorites(userId: string, pageParam: number = 1): Promise<PaginatedResponse<Book>> {
+  if (!userId) {
+    throw new AppError('UNAUTHORIZED', 'User ID is required');
   }
 
-  // Отримуємо загальну кількість
   const [{ totalCount }] = await db
     .select({ totalCount: count() })
     .from(favorites)
-    .where(eq(favorites.userId, session.user.id));
+    .where(eq(favorites.userId, userId));
 
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE) || 1;
 
   let safePage = Math.max(1, Math.floor(pageParam));
   if (Number.isNaN(safePage)) {
-    safePage = 1;
+    throw new AppError('VALIDATION_ERROR', 'Invalid page parameter');
   }
-  if (safePage > totalPages) {
+  if (safePage > totalPages && totalPages > 0) {
     safePage = totalPages;
   }
 
   const offset = (safePage - 1) * ITEMS_PER_PAGE;
 
-  // Робимо JOIN між items та favorites з лімітом та зсувом
   const favoriteBooks = await db
     .select({
       id: items.id,
@@ -94,7 +75,7 @@ export async function getFavorites(pageParam: number = 1): Promise<PaginatedResp
     })
     .from(items)
     .innerJoin(favorites, eq(items.id, favorites.itemId))
-    .where(eq(favorites.userId, session.user.id))
+    .where(eq(favorites.userId, userId))
     .orderBy(desc(favorites.createdAt))
     .limit(ITEMS_PER_PAGE)
     .offset(offset);

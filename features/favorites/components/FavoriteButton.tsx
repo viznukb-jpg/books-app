@@ -1,30 +1,46 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getUserFavoriteIds, toggleFavorite } from "../actions/favorites";
 import { authClient } from "@/shared/lib/auth-client";
 import { useRouter } from "next/navigation";
 
 interface FavoriteButtonProps {
   bookId: string;
 }
+const fetchFavoriteIds = async (): Promise<string[]> => {
+  const res = await fetch("/api/favorites/ids");
+  if (!res.ok) {
+    if (res.status === 401) return [];
+    throw new Error("Failed to fetch favorite ids");
+  }
+  return res.json();
+};
+
+const postToggleFavorite = async (itemId: string) => {
+  const res = await fetch("/api/favorites", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ itemId }),
+  });
+  if (!res.ok) throw new Error("Failed to toggle favorite");
+  return res.json();
+};
 
 export function FavoriteButton({ bookId }: FavoriteButtonProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { data: session, isPending: isSessionLoading } = authClient.useSession();
 
-  // Отримуємо глобальний список улюблених ID (якщо юзер авторизований)
   const { data: favoriteIds = [] } = useQuery({
     queryKey: ["favorites"],
-    queryFn: () => getUserFavoriteIds(),
+    queryFn: fetchFavoriteIds,
     enabled: !!session?.user,
   });
 
   const isFavorite = favoriteIds.includes(bookId);
 
   const mutation = useMutation({
-    mutationFn: () => toggleFavorite(bookId),
+    mutationFn: () => postToggleFavorite(bookId),
     // Оптимістичне оновлення
     onMutate: async () => {
       // 1. Скасовуємо активні запити на "favorites"

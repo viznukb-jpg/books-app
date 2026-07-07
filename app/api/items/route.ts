@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
-import { db } from "@/db";
-import { items } from "@/db/schema";
-import { desc } from "drizzle-orm";
+import { getBooks } from "@/features/books/services/books.service";
+import { withErrorHandler } from "@/shared/lib/api-handler";
 
-export async function GET() {
-  try {
-    const allItems = await db.select().from(items).orderBy(desc(items.createdAt));
-    return NextResponse.json(allItems);
-  } catch (error) {
-    console.error("Error fetching items:", error);
-    return NextResponse.json({ error: "Failed to fetch items" }, { status: 500 });
-  }
+async function getBooksHandler(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const pageParam = searchParams.get("page");
+  const page = pageParam ? parseInt(pageParam, 10) : 1;
+
+  const books = await getBooks(page);
+  return NextResponse.json(books);
 }
+
+export const GET = withErrorHandler(getBooksHandler);

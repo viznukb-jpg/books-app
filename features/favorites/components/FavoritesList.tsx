@@ -1,11 +1,18 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getFavorites } from "../actions/favorites";
 import { BookItem } from "@/features/books/components/BookItem";
 import { Button } from "@/shared/ui/Button";
 import { useSearchParams } from "next/navigation";
 import { Pagination } from "@/shared/ui/Pagination";
+const fetchFavorites = async (page: number) => {
+  const res = await fetch(`/api/favorites?page=${page}`);
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.error || "Failed to fetch favorites");
+  }
+  return res.json();
+};
 
 export function FavoritesList() {
   const searchParams = useSearchParams();
@@ -14,7 +21,7 @@ export function FavoritesList() {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["favorite-books", page],
-    queryFn: () => getFavorites(page),
+    queryFn: () => fetchFavorites(page),
   });
 
   if (isLoading) {

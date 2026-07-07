@@ -1,10 +1,17 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getBooks } from "../actions/get-books";
 import { useSearchParams } from "next/navigation";
 import { Pagination } from "@/shared/ui/Pagination";
 import { BookItem } from "./BookItem";
+const fetchBooks = async (page: number) => {
+  const res = await fetch(`/api/items?page=${page}`);
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.error || "Failed to fetch books");
+  }
+  return res.json();
+};
 
 export function BooksList() {
   const searchParams = useSearchParams();
@@ -13,7 +20,7 @@ export function BooksList() {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["books", page],
-    queryFn: () => getBooks(page),
+    queryFn: () => fetchBooks(page),
   });
 
   if (isLoading) {
